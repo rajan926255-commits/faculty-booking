@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Dashboard - Edit Timetable</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <style>
+        .edit-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(5, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .edit-cell {
+            padding: 8px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+
+        .edit-header {
+            background: #2c3e50;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .edit-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 5px;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Developer Dashboard - Edit Timetable</h1>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </header>
+
+    <main>
+        <h2>Edit Timetable Subjects</h2>
+        <div id="timetableEditor" class="edit-grid"></div>
+        
+        <!-- Save Changes button के नीचे add करें -->
+        <button class="save-btn" onclick="saveTimetable()">💾 Save Changes</button>
+
+        <!-- NEW: Manual Week Reset Button -->
+        <button class="reset-btn" onclick="resetCurrentWeek()" style="background:#e74c3c; margin-left:20px;">
+            🔄 Reset Current Week (Delete All Bookings)
+        </button>
+
+        <script>
+            async function resetCurrentWeek() {
+                if (confirm('⚠️ WARNING: This will delete ALL bookings (pending & approved) for current week. Continue?')) {
+                    if (confirm('Are you absolutely sure? This action cannot be undone.')) {
+                        const response = await fetch('/api/developer/reset-week', { method: 'POST' });
+                        const result = await response.json();
+                        alert(result.message);
+                        // Refresh to see changes
+                        location.reload();
+                    }
+                }
+            }
+        </script>
+    </main>
+
+    <script>
+        let timetableData = {};
+
+        async function loadTimetable() {
+            const response = await fetch('/api/developer/timetable');
+            timetableData = await response.json();
+            renderEditor();
+        }
+
+        function renderEditor() {
+            const grid = document.getElementById('timetableEditor');
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const periods = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+            grid.innerHTML = '<div class="edit-cell edit-header">Period</div>';
+            days.forEach(day => grid.innerHTML += `<div class="edit-cell edit-header">${day}</div>`);
+
+            periods.forEach(period => {
+                grid.innerHTML += `<div class="edit-cell edit-header">Period ${period}</div>`;
+                days.forEach(day => {
+                    const course = timetableData.schedule[day][period].course;
+                    grid.innerHTML += `
+                        <div class="edit-cell">
+                            <input class="edit-input" value="${course}" 
+                                   data-day="${day}" data-period="${period}" 
+                                   onchange="updateCell('${day}', '${period}', this.value)">
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function updateCell(day, period, value) {
+            timetableData.schedule[day][period].course = value;
+        }
+
+        async function saveTimetable() {
+            if (confirm('Save timetable changes?')) {
+                const response = await fetch('/api/developer/timetable', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(timetableData)
+                });
+                const result = await response.json();
+                alert(result.success ? 'Saved!' : 'Error saving');
+            }
+        }
+
+        async function logout() {
+            await fetch('/logout');
+            window.location.href = '/login';
+        }
+
+        loadTimetable();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Slot Booking - Dr. Saurabh Sharma</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Faculty Free Slot Booking System</h1>
+        <div class="faculty-info">
+            <h2>Dr. Saurabh Sharma</h2>
+            <p>Chandigarh Engineering College</p>
+            <p class="working-days">Working Days: Monday - Friday | Lunch: After Period 4</p>
+        </div>
+    </header>
+
+    <div class="week-display" id="weekDisplay">
+    Loading week...
+</div>
+
+<script>
+    // Show current week
+    fetch('/api/current-week')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('weekDisplay').textContent = `Week ${data.week} - ${new Date().toLocaleDateString()}`;
+        });
+</script>
+
+    <main>
+        <div class="timetable-container">
+            <h3>Weekly Timetable - Click on green slots to book</h3>
+            <div id="timetable-grid" class="timetable-grid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-box occupied"></div>
+                <span>Occupied / Past</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box free"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box booked"></div>
+                <span>Booked</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Booking Modal -->
+    <!-- bookingModal के अंदर, form से पहले add करें -->
+    <div class="legend" style="display:flex; justify-content:space-around; margin:15px 0; font-size:0.8em;">
+        <div>
+            <div class="color-box" style="background:#d4edda; border:2px dashed #28a745;"></div> Free
+        </div>
+        <div>
+            <div class="color-box" style="background:#f8f9fa;"></div> Occupied
+        </div>
+        <div>
+            <div class="color-box" style="background:#fff3cd;"></div> Booked
+        </div>
+    </div>
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Book Your Slot</h3>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="slotInfo">Selected Slot:</label>
+                    <input type="text" id="slotInfo" readonly>
+                </div>
+                <input type="hidden" id="selectedDay">
+                <input type="hidden" id="selectedPeriod">
+
+                <div class="form-group">
+                    <label for="studentName">Student Name *</label>
+                    <input type="text" id="studentName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rollNumber">Roll Number *</label>
+                    <input type="text" id="rollNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department *</label>
+                    <select id="department" required>
+                        <option value="">Select Department</option>
+                        <option value="CSE">CSE</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="IOT">IOT</option>
+                        <option value="CSE-DS">CSE-DS</option>
+                        <option value="Cyber Security">Cyber Security</option>
+                        <option value="AI&ML">AI&ML</option>
+                        <option value="AI&DS">AI&DS</option>
+                        <option value="IT">IT</option>
+                        <option value="ECE">ECE</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="purpose">Purpose of Meeting *</label>
+                    <textarea id="purpose" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email (Optional)</label>
+                    <input type="email" id="email">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,427 @@
+/* ========================================
+   FACULTY BOOKING SYSTEM - COMPLETE STYLES
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    padding: 20px;
+}
+
+header {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 2.4em;
+    font-weight: 700;
+}
+
+.faculty-info h2 {
+    color: #34495e;
+    font-size: 1.6em;
+    margin-bottom: 8px;
+}
+
+.faculty-info p {
+    color: #7f8c8d;
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.working-days {
+    font-weight: 600;
+    color: #e74c3c !important;
+    font-size: 1em !important;
+}
+
+/* ========================================
+   TIMETABLE GRID (Developer Dashboard Style)
+   ======================================== */
+
+.timetable-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+.timetable-container h3 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.timetable-grid {
+    display: grid;
+    grid-template-columns: 110px repeat(5, 1fr);
+    gap: 1px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.period-header,
+.day-header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9em;
+    line-height: 1.3;
+}
+
+.day-header {
+    background: #34495e;
+}
+
+.slot {
+    padding: 15px 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.85em;
+    line-height: 1.3;
+    background: white;
+    cursor: default;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    border: 1px solid transparent;
+}
+
+/* ========================================
+   SLOT STATES
+   ======================================== */
+
+/* Free slots - Green border, clickable */
+.slot.free {
+    background: #d4edda !important;
+    color: #155724 !important;
+    border: 2px dashed #28a745 !important;
+    cursor: pointer !important;
+    font-weight: 600;
+}
+
+.slot.free:hover {
+    background: #c3e6cb !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Occupied slots - Gray */
+.slot.occupied {
+    background: #f8f9fa !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Booked slots - Yellow */
+.slot.booked {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border: 1px solid #ffeaa7 !important;
+    font-weight: bold;
+}
+
+/* Past slots - Red */
+.slot.past {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+    opacity: 0.7;
+}
+
+/* Lunch break - Blue */
+.slot.break {
+    background: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border: 1px solid #bee5eb !important;
+    font-weight: bold;
+}
+
+/* ========================================
+   MODAL (BOOKING FORM)
+   ======================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: white;
+    margin: 5% auto;
+    padding: 35px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.form-group input[readonly] {
+    background: #f8f9fa;
+    cursor: not-allowed;
+    font-weight: 600;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.btn-cancel {
+    padding: 12px 25px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+}
+
+.btn-submit {
+    padding: 12px 25px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-submit:hover {
+    background: #218838;
+}
+
+/* ========================================
+   LEGEND
+   ======================================== */
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    background: rgba(255,255,255,0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+.color-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    header {
+        padding: 15px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .timetable-container {
+        padding: 15px;
+    }
+    
+    .timetable-grid {
+        grid-template-columns: 80px repeat(5, 1fr);
+        font-size: 0.8em;
+    }
+    
+    .slot {
+        min-height: 60px;
+        padding: 8px 5px;
+        font-size: 0.75em;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .timetable-grid {
+        grid-template-columns: 60px repeat(5, 1fr);
+    }
+}
+/* Add this to ensure cursor shows correctly */
+.slot.free {
+    cursor: pointer !important;
+    user-select: none;
+}
+
+.slot.free * {
+    pointer-events: none; /* Prevent inner elements from blocking click */
+}
+/* Add at the end of style.css */
+
+.slot.free {
+    cursor: pointer !important;
+    user-select: none;
+}
+
+.slot.free:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
+}
+/* Add this to ensure clicks work through child elements */
+.slot.free * {
+    pointer-events: none !important;
+}
+
+.slot.free {
+    cursor: pointer !important;
+    position: relative;
+}
+/* Add at the end of style.css */
+
+.slot.pending {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border: 2px dashed #ffc107 !important;
+    cursor: not-allowed !important;
+    font-weight: 600;
+}
+
+.slot.pending:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+/* Add to end of style.css */
+
+.week-display {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    border-radius: 10px;
+}
+.reset-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.reset-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}

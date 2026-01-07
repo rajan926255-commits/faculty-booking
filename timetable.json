@@ -1,0 +1,195 @@
+{
+  "faculty": {
+    "institution": "Chandigarh Engineering College",
+    "name": "Dr. Saurabh Sharma",
+    "working_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ]
+  },
+  "period_timings": {
+    "1": "9:15 AM - 10:10 AM",
+    "2": "10:10 AM - 11:05 AM",
+    "3": "11:05 AM - 12:00 PM",
+    "4": "12:00 PM - 12:55 PM",
+    "5": "12:55 PM - 1:50 PM",
+    "6": "1:50 PM - 2:45 PM",
+    "7": "2:45 PM - 3:40 PM",
+    "8": "3:40 PM - 4:35 PM"
+  },
+  "schedule": {
+    "Friday": {
+      "1": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "2": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "3": {
+        "course": "Free",
+        "type": "free"
+      },
+      "4": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "5": {
+        "course": "Lunch Break",
+        "type": "break"
+      },
+      "6": {
+        "course": "DS-4E",
+        "type": "occupied"
+      },
+      "7": {
+        "course": "DS-4E",
+        "type": "occupied"
+      },
+      "8": {
+        "course": "Free",
+        "type": "free"
+      }
+    },
+    "Monday": {
+      "1": {
+        "course": "Free",
+        "type": "free"
+      },
+      "2": {
+        "course": "Free",
+        "type": "free"
+      },
+      "3": {
+        "course": "DS-4E",
+        "type": "occupied"
+      },
+      "4": {
+        "course": "DS-4E",
+        "type": "occupied"
+      },
+      "5": {
+        "course": "Lunch Break",
+        "type": "break"
+      },
+      "6": {
+        "course": "2F-DD",
+        "type": "occupied"
+      },
+      "7": {
+        "course": "Free",
+        "type": "free"
+      },
+      "8": {
+        "course": "Cyber-4D",
+        "type": "occupied"
+      }
+    },
+    "Thursday": {
+      "1": {
+        "course": "Free",
+        "type": "free"
+      },
+      "2": {
+        "course": "Free",
+        "type": "free"
+      },
+      "3": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "4": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "5": {
+        "course": "Lunch Break",
+        "type": "break"
+      },
+      "6": {
+        "course": "Free",
+        "type": "free"
+      },
+      "7": {
+        "course": "Free",
+        "type": "free"
+      },
+      "8": {
+        "course": "Free",
+        "type": "free"
+      }
+    },
+    "Tuesday": {
+      "1": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "2": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "3": {
+        "course": "Free",
+        "type": "free"
+      },
+      "4": {
+        "course": "Free",
+        "type": "free"
+      },
+      "5": {
+        "course": "Lunch Break",
+        "type": "break"
+      },
+      "6": {
+        "course": "Free",
+        "type": "free"
+      },
+      "7": {
+        "course": "Free",
+        "type": "free"
+      },
+      "8": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      }
+    },
+    "Wednesday": {
+      "1": {
+        "course": "Free",
+        "type": "free"
+      },
+      "2": {
+        "course": "3F-DD",
+        "type": "occupied"
+      },
+      "3": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "4": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "5": {
+        "course": "Lunch Break",
+        "type": "break"
+      },
+      "6": {
+        "course": "IOT-4G",
+        "type": "occupied"
+      },
+      "7": {
+        "course": "Free",
+        "type": "free"
+      },
+      "8": {
+        "course": "Free",
+        "type": "free"
+      }
+    }
+  }
+}

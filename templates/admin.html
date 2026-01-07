@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Faculty Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <div class="admin-actions">
+            <span>Welcome, Dr. Saurabh Sharma</span>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <h2>All Booked Slots</h2>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalBookings">0</h3>
+                <p>Total Bookings</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="todayBookings">0</h3>
+                <p>Today's Bookings</p>
+            </div>
+        </div>
+
+        <div class="bookings-table-container">
+            <table id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Day</th>
+                        <th>Period</th>
+                        <th>Time</th>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                        <th>Department</th>
+                        <th>Purpose</th>
+                        <th>Email</th>
+                        <th>Booking Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <!-- Dynamic content -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

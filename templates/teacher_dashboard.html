@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Faculty Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Teacher Dashboard - Dr. Saurabh Sharma</h1>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </header>
+
+    <main>
+        <h2>Pending Approval Requests</h2>
+        <div id="pendingRequests" class="bookings-table-container">
+            <table><thead><tr>
+                <th>ID</th><th>Day</th><th>Period</th><th>Student</th><th>Roll No</th><th>Department</th><th>Purpose</th><th>Time</th><th>Action</th>
+            </tr></thead><tbody id="pendingBody"></tbody></table>
+        </div>
+
+        <h2>Approved Bookings</h2>
+        <div id="approvedBookings" class="bookings-table-container">
+            <table><thead><tr>
+                <th>ID</th><th>Day</th><th>Period</th><th>Student</th><th>Roll No</th><th>Department</th><th>Purpose</th><th>Status</th>
+            </tr></thead><tbody id="approvedBody"></tbody></table>
+        </div>
+    </main>
+
+    <script>
+        async function loadRequests() {
+            const response = await fetch('/api/teacher/bookings');
+            const data = await response.json();
+            
+            // Render pending requests
+            const pendingBody = document.getElementById('pendingBody');
+            pendingBody.innerHTML = data.pending.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.day}</td>
+                    <td>Period ${b.period}</td>
+                    <td>${b.student_name}</td>
+                    <td>${b.roll_number}</td>
+                    <td>${b.department}</td>
+                    <td>${b.purpose}</td>
+                    <td>${b.booking_time}</td>
+                    <td>
+                        <button class="logout-btn" style="background:#28a745;" onclick="approve(${b.id})">Approve</button>
+                        <button class="logout-btn" onclick="reject(${b.id})">Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Render approved bookings
+            const approvedBody = document.getElementById('approvedBody');
+            approvedBody.innerHTML = data.approved.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.day}</td>
+                    <td>Period ${b.period}</td>
+                    <td>${b.student_name}</td>
+                    <td>${b.roll_number}</td>
+                    <td>${b.department}</td>
+                    <td>${b.purpose}</td>
+                    <td><span style="color:green;font-weight:bold;">✓ Approved</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        async function approve(id) {
+            if(confirm('Approve this booking?')) {
+                await fetch(`/api/teacher/approve/${id}`, {method: 'POST'});
+                loadRequests();
+            }
+        }
+        
+        async function reject(id) {
+            if(confirm('Reject this booking?')) {
+                await fetch(`/api/teacher/reject/${id}`, {method: 'POST'});
+                loadRequests();
+            }
+        }
+        
+        async function logout() {
+            await fetch('/logout');
+            window.location.href = '/login';
+        }
+        
+        loadRequests();
+    </script>
+</body>
+</html>

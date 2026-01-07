@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Faculty Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <style>
+        body { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .login-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .login-option {
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-option:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+        .login-form { display: none; margin-top: 20px; }
+        .login-form.active { display: block; }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 style="text-align:center; margin-bottom:30px;">Faculty Booking System - Login</h2>
+        
+        <div class="login-option" onclick="showLogin('student')">
+            <h3>👨‍🎓 Student Login</h3>
+            <p>Book free slots for meeting</p>
+        </div>
+        
+        <div class="login-option" onclick="showLogin('teacher')">
+            <h3>👨‍🏫 Teacher Login</h3>
+            <p>Approve/Reject booking requests</p>
+        </div>
+        
+        <div class="login-option" onclick="showLogin('developer')">
+            <h3>💻 Developer Login</h3>
+            <p>Edit timetable structure</p>
+        </div>
+
+        <!-- Student Login -->
+        <div id="studentLogin" class="login-form">
+            <h4>Student Access</h4>
+            <button onclick="window.location.href='/'" class="login-btn" style="background:#28a745;">
+                Continue as Student
+            </button>
+        </div>
+
+        <!-- Teacher Login -->
+        <div id="teacherLogin" class="login-form">
+            <form onsubmit="handleLogin(event, 'teacher')">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" value="teacher" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" value="teacher123" required>
+                </div>
+                <button type="submit" class="login-btn">Login as Teacher</button>
+            </form>
+        </div>
+
+        <!-- Developer Login -->
+        <div id="developerLogin" class="login-form">
+            <form onsubmit="handleLogin(event, 'developer')">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" value="dev" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" value="dev123" required>
+                </div>
+                <button type="submit" class="login-btn" style="background:#e74c3c;">
+                    Login as Developer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showLogin(type) {
+            document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(type + 'Login').classList.add('active');
+        }
+        
+        async function handleLogin(e, type) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch(`/${type}/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    username: formData.get('username'),
+                    password: formData.get('password')
+                })
+            });
+            const result = await response.json();
+            if(result.success) window.location.href = `/${type}/dashboard`;
+            else alert('Invalid credentials');
+        }
+    </script>
+</body>
+</html>
