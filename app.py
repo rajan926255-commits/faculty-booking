@@ -6,7 +6,6 @@ import json
 from datetime import datetime
 import os
 from datetime import date
-import time
 
 # Load .env file
 load_dotenv()
@@ -63,7 +62,7 @@ def get_current_week():
 
 @app.route('/')
 def index():
-    """Student booking page"""
+    """Student booking page - direct access"""
     return render_template('index.html')
 
 @app.route('/login')

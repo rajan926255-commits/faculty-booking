@@ -1,12 +1,30 @@
+console.log('DEBUG: main.js loaded successfully'); // Debug log
+
 let timetableData = {};
 let bookedSlots = {};
 let pendingSlots = {};
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadTimetable();
-    loadBookedSlots();
-    loadPendingSlots();
+// DOM fully load होने के बाद ही run करें
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DEBUG: DOM Content Loaded'); // Debug log
     
+    try {
+        await loadTimetable();
+        console.log('DEBUG: Timetable loaded'); // Debug log
+        
+        await loadBookedSlots();
+        console.log('DEBUG: Bookings loaded'); // Debug log
+        
+        await loadPendingSlots();
+        console.log('DEBUG: Pending slots loaded'); // Debug log
+        
+        renderTimetable();
+        console.log('DEBUG: Timetable rendered'); // Debug log
+    } catch (error) {
+        console.error('DEBUG: Error during initialization:', error);
+    }
+    
+    // Modal close events
     document.querySelector('.close').onclick = closeModal;
     window.onclick = (event) => {
         if (event.target == document.getElementById('bookingModal')) {
@@ -17,19 +35,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadTimetable() {
     try {
+        console.log('DEBUG: Fetching timetable from /api/timetable');
         const response = await fetch('/api/timetable');
-        const data = await response.json();
-        timetableData = data;
-        renderTimetable();
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        timetableData = await response.json();
+        console.log('DEBUG: Timetable data received:', timetableData);
+        
     } catch (error) {
-        console.error('Error loading timetable:', error);
+        console.error('DEBUG: Error loading timetable:', error);
+        // Show error on page
+        const grid = document.getElementById('timetable-grid');
+        if (grid) {
+            grid.innerHTML = `<div style="color:red; padding:20px;">Error loading timetable: ${error.message}</div>`;
+        }
     }
 }
 
 async function loadBookedSlots() {
     try {
+        console.log('DEBUG: Fetching bookings from /api/bookings');
         const response = await fetch('/api/bookings');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('DEBUG: Bookings data received:', data);
         
         if (data.success) {
             bookedSlots = {};
@@ -39,17 +75,23 @@ async function loadBookedSlots() {
                     bookedSlots[key] = booking;
                 }
             });
-            renderTimetable();
         }
     } catch (error) {
-        console.error('Error loading bookings:', error);
+        console.error('DEBUG: Error loading bookings:', error);
     }
 }
 
 async function loadPendingSlots() {
     try {
+        console.log('DEBUG: Fetching pending slots from /api/student/pending');
         const response = await fetch('/api/student/pending');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('DEBUG: Pending data received:', data);
         
         if (data.success) {
             pendingSlots = {};
@@ -57,21 +99,33 @@ async function loadPendingSlots() {
                 const key = `${booking.day}-${booking.period}`;
                 pendingSlots[key] = true;
             });
-            renderTimetable();
         }
     } catch (error) {
-        console.error('Error loading pending slots:', error);
+        console.error('DEBUG: Error loading pending slots:', error);
     }
 }
 
 function renderTimetable() {
+    console.log('DEBUG: Starting to render timetable'); // Debug log
+    
     const grid = document.getElementById('timetable-grid');
+    if (!grid) {
+        console.error('DEBUG: timetable-grid element not found!');
+        return;
+    }
+    
     grid.innerHTML = '';
+    
+    if (!timetableData || !timetableData.schedule) {
+        console.error('DEBUG: timetableData is empty or invalid:', timetableData);
+        grid.innerHTML = '<div style="color:red; padding:20px;">No timetable data available</div>';
+        return;
+    }
     
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const periods = ['1', '2', '3', '4', '5', '6', '7', '8'];
     
-    // Header
+    // Create header row
     const periodHeader = createDiv('Period<br><small>Time</small>', 'period-header');
     grid.appendChild(periodHeader);
     
@@ -79,7 +133,7 @@ function renderTimetable() {
         grid.appendChild(createDiv(day, 'day-header'));
     });
     
-    // Rows
+    // Create rows
     periods.forEach(period => {
         const periodTiming = timetableData.period_timings[period];
         grid.appendChild(createDiv(`<strong>Period ${period}</strong><br><small>${periodTiming}</small>`, 'period-header'));
@@ -91,7 +145,7 @@ function renderTimetable() {
             let slotText = slotData.course;
             const slot = createDiv(slotText, `slot ${slotData.type}`);
             
-            // FIXED: Check pending first
+            // Check states
             if (pendingSlots[slotKey]) {
                 slot.className = 'slot pending';
                 slot.innerHTML = `<div style="font-weight:bold; color:#856404;">Pending</div><small style="color:#856404;">Approval Required</small>`;
@@ -118,13 +172,11 @@ function renderTimetable() {
                 slot.className = 'slot occupied';
             }
             
-            // FIXED: Don't mark any slot as past for now
-            // Remove this temporary check completely
-            // if (isPastSlot(day, period)) slot.className = 'slot past';
-            
             grid.appendChild(slot);
         });
     });
+    
+    console.log('DEBUG: Timetable rendering complete'); // Debug log
 }
 
 function createDiv(text, className) {
@@ -175,7 +227,6 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
                 alert(result.message);
                 closeModal();
                 
-                // Immediately mark slot as pending locally
                 const pendingKey = `${bookingData.day}-${bookingData.period}`;
                 pendingSlots[pendingKey] = true;
                 renderTimetable();
@@ -189,15 +240,8 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
     }
 });
 
-// TEMPORARY: Completely disable past checking to test Monday slot 1
 function isPastSlot(day, period) {
     const now = new Date();
-    // Special debug for Monday slot 1
-    if (day === 'Monday' && period === '1') {
-        console.log('DEBUG: Monday Slot 1 - Always available for testing');
-        return false; // Force Monday slot 1 to be always available
-    }
-    
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const currentDayIndex = now.getDay();
     
