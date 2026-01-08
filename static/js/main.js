@@ -3,6 +3,7 @@ console.log('DEBUG: main.js loaded successfully'); // Debug log
 let timetableData = {};
 let bookedSlots = {};
 let pendingSlots = {};
+let blockedSlots = {}; // NEW: Track blocked slots
 
 // DOM fully load होने के बाद ही run करें
 document.addEventListener('DOMContentLoaded', async () => {
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         await loadPendingSlots();
         console.log('DEBUG: Pending slots loaded'); // Debug log
+        
+        await loadBlockedSlots(); // NEW: Load blocked slots
+        console.log('DEBUG: Blocked slots loaded'); // Debug log
         
         renderTimetable();
         console.log('DEBUG: Timetable rendered'); // Debug log
@@ -105,6 +109,31 @@ async function loadPendingSlots() {
     }
 }
 
+// NEW: Load blocked slots
+async function loadBlockedSlots() {
+    try {
+        console.log('DEBUG: Fetching blocked slots from /api/blocked-slots');
+        const response = await fetch('/api/blocked-slots');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('DEBUG: Blocked data received:', data);
+        
+        if (data.success) {
+            blockedSlots = {};
+            data.blocked.forEach(slot => {
+                const key = `${slot.day}-${slot.period}`;
+                blockedSlots[key] = true;
+            });
+        }
+    } catch (error) {
+        console.error('DEBUG: Error loading blocked slots:', error);
+    }
+}
+
 function renderTimetable() {
     console.log('DEBUG: Starting to render timetable'); // Debug log
     
@@ -145,8 +174,13 @@ function renderTimetable() {
             let slotText = slotData.course;
             const slot = createDiv(slotText, `slot ${slotData.type}`);
             
-            // Check states
-            if (pendingSlots[slotKey]) {
+            // NEW: Check blocked slots first
+            if (blockedSlots[slotKey]) {
+                slot.className = 'slot blocked';
+                slot.innerHTML = `<div style="font-weight:bold; color:#721c24;">No free time now</div><small style="color:#721c24;">Unavailable</small>`;
+                slot.onclick = null;
+            }
+            else if (pendingSlots[slotKey]) {
                 slot.className = 'slot pending';
                 slot.innerHTML = `<div style="font-weight:bold; color:#856404;">Pending</div><small style="color:#856404;">Approval Required</small>`;
                 slot.onclick = null;
@@ -159,11 +193,12 @@ function renderTimetable() {
             else if (slotData.type === 'free') {
                 slot.className = 'slot free';
                 slot.style.cursor = 'pointer';
-                slot.addEventListener('click', () => openBookingModal(day, period));
                 
                 if (slotText === 'Free') {
                     slot.innerHTML = `<div style="font-weight:bold; color:#155724;">Free</div><small style="color:#28a745;">Click to Book</small>`;
                 }
+                
+                slot.addEventListener('click', () => openBookingModal(day, period));
             }
             else if (slotData.type === 'break') {
                 slot.className = 'slot break';
@@ -217,7 +252,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
         try {
             const response = await fetch('/api/book', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bookingData)
             });
             
