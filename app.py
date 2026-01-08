@@ -16,11 +16,11 @@ CORS(app)
 
 # Read credentials from environment
 TEACHER_USER = os.getenv('TEACHER_USERNAME', 'teacher')
-TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'temp_pass')
+TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'teacher123')
 DEV_USER = os.getenv('DEVELOPER_USERNAME', 'dev')
-DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'temp_pass')
+DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'dev123')
 ADMIN_USER = os.getenv('ADMIN_USERNAME', 'admin')
-ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'temp_pass')
+ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'admin123')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'database.db')
@@ -62,13 +62,18 @@ def get_current_week():
 
 @app.route('/')
 def index():
-    """Student booking page - direct access"""
-    return render_template('index.html')
+    """Redirect to login page"""
+    return redirect(url_for('login_page'))
 
 @app.route('/login')
 def login_page():
     """Login page"""
     return render_template('login.html')
+
+@app.route('/student/dashboard')
+def student_dashboard():
+    """Student booking page - no authentication required"""
+    return render_template('index.html')
 
 @app.route('/api/timetable')
 def get_timetable():
@@ -88,13 +93,13 @@ def book_slot():
 
         current_week = get_current_week()
         
-        # Check if slot already booked in current week
+        # Check if slot already booked/blocked in current week
         with sqlite3.connect(DB_PATH) as conn:
             c = conn.cursor()
-            c.execute("SELECT * FROM bookings WHERE day = ? AND period = ? AND week_number = ? AND status != 'cancelled'", 
+            c.execute("SELECT * FROM bookings WHERE day = ? AND period = ? AND week_number = ? AND status IN ('pending', 'approved', 'blocked')", 
                      (data['day'], data['period'], current_week))
             if c.fetchone():
-                return jsonify({'success': False, 'message': 'This slot already has a pending/approved request for this week'}), 409
+                return jsonify({'success': False, 'message': 'This slot is not available'}), 409
 
             # Insert booking with current week number
             c.execute('''
@@ -151,6 +156,24 @@ def get_student_pending():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 # ====================================
+# BLOCKED SLOTS ROUTE
+# ====================================
+
+@app.route('/api/blocked-slots')
+def get_blocked_slots():
+    """Get blocked slots for current week"""
+    try:
+        current_week = get_current_week()
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            c = conn.cursor()
+            c.execute("SELECT day, period FROM bookings WHERE week_number = ? AND status = 'blocked'", (current_week,))
+            blocked = [dict(row) for row in c.fetchall()]
+        return jsonify({'success': True, 'blocked': blocked})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# ====================================
 # TEACHER ROUTES
 # ====================================
 
@@ -199,12 +222,14 @@ def approve_booking(booking_id):
 
 @app.route('/api/teacher/reject/<int:booking_id>', methods=['POST'])
 def reject_booking(booking_id):
+    """Reject booking and mark slot as blocked"""
     if not session.get('teacher'):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
     
     with sqlite3.connect(DB_PATH) as conn:
         c = conn.cursor()
-        c.execute("UPDATE bookings SET status = 'rejected' WHERE id = ?", (booking_id,))
+        # Change status to blocked instead of rejected
+        c.execute("UPDATE bookings SET status = 'blocked' WHERE id = ?", (booking_id,))
         conn.commit()
     
     return jsonify({'success': True})
@@ -251,7 +276,7 @@ def reset_current_week():
         with sqlite3.connect(DB_PATH) as conn:
             c = conn.cursor()
             # Delete all active bookings for current week
-            c.execute("DELETE FROM bookings WHERE week_number = ? AND status IN ('pending', 'approved')", (current_week,))
+            c.execute("DELETE FROM bookings WHERE week_number = ? AND status IN ('pending', 'approved', 'blocked')", (current_week,))
             conn.commit()
         
         return jsonify({'success': True, 'message': f'Week {current_week} reset successfully! All bookings cleared.'})
