@@ -52,7 +52,7 @@ header h1 {
 }
 
 /* ========================================
-   TIMETABLE GRID (Developer Dashboard Style)
+   TIMETABLE GRID
    ======================================== */
 
 .timetable-container {
@@ -125,12 +125,33 @@ header h1 {
     border: 2px dashed #28a745 !important;
     cursor: pointer !important;
     font-weight: 600;
+    user-select: none;
+    position: relative;
+}
+
+/* SLOT STATES सेक्शन में जोड़ें */
+.slot.blocked {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+    border: 2px dashed #dc3545 !important;
+    cursor: not-allowed !important;
+    font-weight: 600;
+}
+
+.slot.blocked:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .slot.free:hover {
     background: #c3e6cb !important;
     transform: scale(1.02);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Fix clicks for child elements */
+.slot.free * {
+    pointer-events: none;
 }
 
 /* Occupied slots - Gray */
@@ -162,6 +183,20 @@ header h1 {
     color: #0c5460 !important;
     border: 1px solid #bee5eb !important;
     font-weight: bold;
+}
+
+/* Pending slots - Orange dashed */
+.slot.pending {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border: 2px dashed #ffc107 !important;
+    cursor: not-allowed !important;
+    font-weight: 600;
+}
+
+.slot.pending:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* ========================================
@@ -311,6 +346,39 @@ header h1 {
 }
 
 /* ========================================
+   WEEK DISPLAY & RESET BUTTON
+   ======================================== */
+
+.week-display {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.reset-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.reset-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 
@@ -352,76 +420,4 @@ header h1 {
     .timetable-grid {
         grid-template-columns: 60px repeat(5, 1fr);
     }
-}
-/* Add this to ensure cursor shows correctly */
-.slot.free {
-    cursor: pointer !important;
-    user-select: none;
-}
-
-.slot.free * {
-    pointer-events: none; /* Prevent inner elements from blocking click */
-}
-/* Add at the end of style.css */
-
-.slot.free {
-    cursor: pointer !important;
-    user-select: none;
-}
-
-.slot.free:hover {
-    transform: scale(1.02) !important;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
-}
-/* Add this to ensure clicks work through child elements */
-.slot.free * {
-    pointer-events: none !important;
-}
-
-.slot.free {
-    cursor: pointer !important;
-    position: relative;
-}
-/* Add at the end of style.css */
-
-.slot.pending {
-    background: #fff3cd !important;
-    color: #856404 !important;
-    border: 2px dashed #ffc107 !important;
-    cursor: not-allowed !important;
-    font-weight: 600;
-}
-
-.slot.pending:hover {
-    transform: none !important;
-    box-shadow: none !important;
-}
-/* Add to end of style.css */
-
-.week-display {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #2c3e50;
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 10px;
-}
-.reset-btn {
-    background: #e74c3c;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: background 0.3s;
-}
-
-.reset-btn:hover {
-    background: #c0392b;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
