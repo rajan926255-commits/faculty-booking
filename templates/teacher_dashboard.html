@@ -47,7 +47,7 @@
                     <td>${b.booking_time}</td>
                     <td>
                         <button class="logout-btn" style="background:#28a745;" onclick="approve(${b.id})">Approve</button>
-                        <button class="logout-btn" onclick="reject(${b.id})">Reject</button>
+                        <button class="logout-btn" style="background:#dc3545;" onclick="reject(${b.id})">Reject/Block</button>
                     </td>
                 </tr>
             `).join('');
@@ -76,7 +76,7 @@
         }
         
         async function reject(id) {
-            if(confirm('Reject this booking?')) {
+            if(confirm('Reject this booking and BLOCK this slot permanently?')) {
                 await fetch(`/api/teacher/reject/${id}`, {method: 'POST'});
                 loadRequests();
             }
