@@ -16,11 +16,11 @@ CORS(app)
 
 # Read credentials from environment
 TEACHER_USER = os.getenv('TEACHER_USERNAME', 'teacher')
-TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'teacher123')
+TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'teacher@841231')
 DEV_USER = os.getenv('DEVELOPER_USERNAME', 'dev')
-DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'dev123')
+DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'dev@841231')
 ADMIN_USER = os.getenv('ADMIN_USERNAME', 'admin')
-ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'admin123')
+ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'admin@841231')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'database.db')
