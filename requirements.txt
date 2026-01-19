@@ -1,4 +1,5 @@
 Flask==2.3.2
 Flask-CORS==4.0.0
-python-dotenv==1.0.0  # NEW: For .env file support
+Flask-Mail==0.9.1  # NEW: For email
+python-dotenv==1.0.0
 gunicorn==21.2.0
