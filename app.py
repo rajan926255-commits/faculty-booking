@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
+from flask_mail import Mail, Message  # NEW: For Email
 from dotenv import load_dotenv
 import sqlite3
 import json
@@ -14,13 +15,24 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'faculty-booking-system-2024')
 CORS(app)
 
+# NEW: Flask-Mail Configuration
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Your Gmail
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # App Password
+mail = Mail(app)
+
 # Read credentials from environment
 TEACHER_USER = os.getenv('TEACHER_USERNAME', 'teacher')
-TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'teacher@841231')
+TEACHER_PASS = os.getenv('TEACHER_PASSWORD', 'teacher123')
 DEV_USER = os.getenv('DEVELOPER_USERNAME', 'dev')
-DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'dev@841231')
+DEV_PASS = os.getenv('DEVELOPER_PASSWORD', 'dev123')
 ADMIN_USER = os.getenv('ADMIN_USERNAME', 'admin')
-ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'admin@841231')
+ADMIN_PASS = os.getenv('ADMIN_PASSWORD', 'admin123')
+
+# NEW: Teacher Email for notifications
+TEACHER_EMAIL = os.getenv('TEACHER_EMAIL', 'teacher@gmail.com')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'database.db')
@@ -45,6 +57,15 @@ def init_db():
                 UNIQUE(day, period, week_number)
             )
         ''')
+        
+        # System config table for auto-reset
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS system_config (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        ''')
+        
         conn.commit()
 
 def load_timetable():
@@ -56,9 +77,98 @@ def get_current_week():
     """Get current ISO week number"""
     return date.today().isocalendar()[1]
 
+def should_reset_week():
+    """Check if it's a new week (Monday) and we need to reset"""
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute("SELECT value FROM system_config WHERE key = 'last_reset_week'")
+            result = c.fetchone()
+            
+            current_week = get_current_week()
+            
+            if not result:
+                c.execute("INSERT INTO system_config (key, value) VALUES (?, ?)", 
+                         ('last_reset_week', str(current_week)))
+                conn.commit()
+                return False
+            
+            last_reset_week = int(result[0])
+            
+            if current_week != last_reset_week:
+                c.execute("UPDATE system_config SET value = ? WHERE key = 'last_reset_week'", 
+                         (str(current_week),))
+                conn.commit()
+                return True
+            
+            return False
+    except:
+        return False
+
+def auto_reset_week():
+    """Automatically reset bookings if it's a new week"""
+    if should_reset_week():
+        current_week = get_current_week()
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute("DELETE FROM bookings WHERE week_number != ?", (current_week,))
+            conn.commit()
+        print(f"🔄 Auto-reset: Cleared bookings for new week {current_week}")
+
+# NEW: Email Notification Function
+def send_teacher_email(student_name, day, period, slot_time, student_email=''):
+    """Send email notification to teacher"""
+    try:
+        if not TEACHER_EMAIL:
+            print("⚠️ Email skipped: Teacher email not configured")
+            return False
+            
+        msg = Message(
+            '🎓 New Booking Request - Faculty Slot Booking',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[TEACHER_EMAIL]
+        )
+        
+        msg.html = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
+            <h2 style="color: #2c3e50;">New Booking Request</h2>
+            <p><strong>Student:</strong> {student_name}</p>
+            <p><strong>Day:</strong> {day}</p>
+            <p><strong>Period:</strong> {period}</p>
+            <p><strong>Time:</strong> {slot_time}</p>
+            <p><strong>Email:</strong> {student_email or 'Not provided'}</p>
+            
+            <hr style="margin: 20px 0;">
+            
+            <p>Please login to your dashboard to approve/reject this request:</p>
+            
+            <a href="https://facultybooking96.pythonanywhere.com/teacher/dashboard" 
+               style="background: #3498db; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                Go to Dashboard
+            </a>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #7f8c8d;">
+                This is an automated notification from Faculty Booking System.
+            </p>
+        </div>
+        """
+        
+        mail.send(msg)
+        print(f"✅ Email sent to {TEACHER_EMAIL}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Email sending failed: {e}")
+        return False
+
 # ====================================
 # CORE ROUTES
 # ====================================
+
+@app.before_request
+def before_request():
+    """Check for auto-reset on every request"""
+    auto_reset_week()
 
 @app.route('/')
 def index():
@@ -112,6 +222,12 @@ def book_slot():
                 current_week
             ))
             conn.commit()
+            
+            # Get slot timing for email
+            period_timing = load_timetable()['period_timings'][data['period']]
+
+        # Send email notification to teacher
+        send_teacher_email(data['studentName'], data['day'], data['period'], period_timing, data.get('email', ''))
 
         return jsonify({'success': True, 'message': 'Booking request submitted! Waiting for teacher approval.'})
 
@@ -228,7 +344,6 @@ def reject_booking(booking_id):
     
     with sqlite3.connect(DB_PATH) as conn:
         c = conn.cursor()
-        # Change status to blocked instead of rejected
         c.execute("UPDATE bookings SET status = 'blocked' WHERE id = ?", (booking_id,))
         conn.commit()
     
@@ -275,7 +390,6 @@ def reset_current_week():
     try:
         with sqlite3.connect(DB_PATH) as conn:
             c = conn.cursor()
-            # Delete all active bookings for current week
             c.execute("DELETE FROM bookings WHERE week_number = ? AND status IN ('pending', 'approved', 'blocked')", (current_week,))
             conn.commit()
         
@@ -300,7 +414,6 @@ def developer_timetable():
     if request.method == 'POST':
         data = request.get_json()
         
-        # CRITICAL FIX: Auto-update slot type based on course name
         for day in data['schedule']:
             for period in data['schedule'][day]:
                 course_name = data['schedule'][day][period]['course'].strip().lower()
@@ -334,4 +447,5 @@ if __name__ == '__main__':
     init_db()
     print("✅ Database initialized!")
     print("🚀 Server starting on http://127.0.0.1:5000")
+    print("📧 Email notifications enabled with Gmail")
     app.run(debug=True, port=5000)
