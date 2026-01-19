@@ -1,7 +1,27 @@
 /* ========================================
-   FACULTY BOOKING SYSTEM - COMPLETE STYLES
+   FACULTY BOOKING SYSTEM - PROFESSIONAL STYLES
    ======================================== */
 
+/* CSS Variables for Design System */
+:root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary-color: #06d6a0;
+    --danger-color: #ef476f;
+    --warning-color: #ffd166;
+    --dark-color: #1d3557;
+    --light-color: #f8f9fa;
+    --text-color: #2b2d42;
+    --text-light: #8d99ae;
+    --border-color: #e9ecef;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -9,104 +29,119 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     min-height: 100vh;
-    color: #333;
+    color: var(--text-color);
     padding: 20px;
+    line-height: 1.6;
 }
 
+/* Modern Header */
 header {
     background: rgba(255, 255, 255, 0.95);
-    padding: 25px;
+    backdrop-filter: blur(20px);
+    padding: 30px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    border-radius: 15px;
-    margin-bottom: 30px;
-    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius);
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 header h1 {
-    color: #2c3e50;
+    color: var(--dark-color);
     margin-bottom: 15px;
-    font-size: 2.4em;
-    font-weight: 700;
+    font-size: 2.8em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .faculty-info h2 {
-    color: #34495e;
-    font-size: 1.6em;
-    margin-bottom: 8px;
+    color: var(--dark-color);
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .faculty-info p {
-    color: #7f8c8d;
-    margin: 5px 0;
+    color: var(--text-light);
+    margin: 8px 0;
     font-size: 1.1em;
 }
 
 .working-days {
     font-weight: 600;
-    color: #e74c3c !important;
-    font-size: 1em !important;
+    color: var(--danger-color) !important;
+    font-size: 0.95em !important;
+    background: rgba(239, 71, 111, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 10px;
 }
 
-/* ========================================
-   TIMETABLE GRID
-   ======================================== */
-
+/* Professional Timetable Container */
 .timetable-container {
     max-width: 1400px;
     margin: 0 auto;
     background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    padding: 35px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
 }
 
 .timetable-container h3 {
-    color: #2c3e50;
+    color: var(--dark-color);
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 1.4em;
-    font-weight: 600;
+    margin-bottom: 30px;
+    font-size: 1.6em;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
+/* Modern Grid Layout */
 .timetable-grid {
     display: grid;
     grid-template-columns: 110px repeat(5, 1fr);
     gap: 1px;
-    background: #ddd;
-    border-radius: 10px;
+    background: var(--border-color);
+    border-radius: var(--border-radius);
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .period-header,
 .day-header {
-    background: #2c3e50;
+    background: var(--dark-color);
     color: white;
-    padding: 15px 10px;
+    padding: 18px 10px;
     text-align: center;
     font-weight: 600;
     font-size: 0.9em;
-    line-height: 1.3;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
 }
 
 .day-header {
-    background: #34495e;
+    background: var(--primary-color);
+    font-size: 1em;
 }
 
 .slot {
-    padding: 15px 10px;
+    padding: 18px 10px;
     text-align: center;
-    transition: all 0.3s ease;
-    min-height: 80px;
+    transition: var(--transition);
+    min-height: 85px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     font-size: 0.85em;
-    line-height: 1.3;
+    line-height: 1.4;
     background: white;
     cursor: default;
     word-wrap: break-word;
@@ -114,62 +149,43 @@ header h1 {
     border: 1px solid transparent;
 }
 
-/* ========================================
-   SLOT STATES
-   ======================================== */
-
-/* Free slots - Green border, clickable */
+/* Modern Slot States */
 .slot.free {
-    background: #d4edda !important;
+    background: linear-gradient(135deg, #d4edda, #c3f0ca) !important;
     color: #155724 !important;
-    border: 2px dashed #28a745 !important;
+    border: 2px dashed var(--secondary-color) !important;
     cursor: pointer !important;
-    font-weight: 600;
+    font-weight: 700;
     user-select: none;
     position: relative;
-}
-
-/* SLOT STATES सेक्शन में जोड़ें */
-.slot.blocked {
-    background: #f8d7da !important;
-    color: #721c24 !important;
-    border: 2px dashed #dc3545 !important;
-    cursor: not-allowed !important;
-    font-weight: 600;
-}
-
-.slot.blocked:hover {
-    transform: none !important;
-    box-shadow: none !important;
+    box-shadow: inset 0 0 10px rgba(6, 214, 160, 0.1);
 }
 
 .slot.free:hover {
-    background: #c3e6cb !important;
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    background: linear-gradient(135deg, #c3e6cb, #b3e8c7) !important;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
 }
 
-/* Fix clicks for child elements */
-.slot.free * {
-    pointer-events: none;
+/* Clickable effect */
+.slot.free:active {
+    transform: translateY(0) scale(0.98);
 }
 
-/* Occupied slots - Gray */
 .slot.occupied {
     background: #f8f9fa !important;
-    color: #495057 !important;
-    border: 1px solid #dee2e6 !important;
+    color: var(--text-light) !important;
+    border: 1px solid var(--border-color) !important;
+    font-weight: 500;
 }
 
-/* Booked slots - Yellow */
 .slot.booked {
-    background: #fff3cd !important;
+    background: linear-gradient(135deg, #fff3cd, #ffe8a1) !important;
     color: #856404 !important;
     border: 1px solid #ffeaa7 !important;
-    font-weight: bold;
+    font-weight: 700;
 }
 
-/* Past slots - Red */
 .slot.past {
     background: #f8d7da !important;
     color: #721c24 !important;
@@ -177,32 +193,86 @@ header h1 {
     opacity: 0.7;
 }
 
-/* Lunch break - Blue */
 .slot.break {
-    background: #d1ecf1 !important;
+    background: linear-gradient(135deg, #d1ecf1, #b3e5fc) !important;
     color: #0c5460 !important;
     border: 1px solid #bee5eb !important;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 0.75em;
 }
 
-/* Pending slots - Orange dashed */
 .slot.pending {
-    background: #fff3cd !important;
+    background: linear-gradient(135deg, #fff3cd, #ffe8a1) !important;
     color: #856404 !important;
-    border: 2px dashed #ffc107 !important;
+    border: 2px dashed var(--warning-color) !important;
     cursor: not-allowed !important;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.slot.pending:hover {
-    transform: none !important;
-    box-shadow: none !important;
+.slot.blocked {
+    background: linear-gradient(135deg, #f8d7da, #f5b3c1) !important;
+    color: #721c24 !important;
+    border: 2px dashed var(--danger-color) !important;
+    cursor: not-allowed !important;
+    font-weight: 700;
 }
 
-/* ========================================
-   MODAL (BOOKING FORM)
-   ======================================== */
+/* Fix clicks for child elements */
+.slot.free * {
+    pointer-events: none;
+}
 
+/* Week Display */
+.week-display {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    margin: 30px auto;
+    max-width: 400px;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--dark-color);
+    padding: 15px 25px;
+    border-radius: 30px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Professional Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95em;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.color-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+/* Modern Modal */
 .modal {
     display: none;
     position: fixed;
@@ -211,44 +281,58 @@ header h1 {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-content {
     background: white;
     margin: 5% auto;
-    padding: 35px;
-    border-radius: 15px;
+    padding: 40px;
+    border-radius: var(--border-radius);
     width: 90%;
     max-width: 500px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .close {
-    color: #aaa;
+    color: var(--text-light);
     float: right;
     font-size: 32px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: var(--transition);
 }
 
 .close:hover {
-    color: #000;
+    color: var(--danger-color);
+    transform: rotate(90deg);
 }
 
+/* Form Styles */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--dark-color);
     font-size: 0.95em;
 }
 
@@ -256,168 +340,143 @@ header h1 {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    padding: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
     font-size: 16px;
-    transition: border-color 0.3s;
+    transition: var(--transition);
+    font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #667eea;
+    border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
 }
 
 .form-group input[readonly] {
-    background: #f8f9fa;
+    background: var(--light-color);
     cursor: not-allowed;
     font-weight: 600;
+    border-color: #ced4da;
 }
 
+/* Professional Buttons */
 .form-actions {
     display: flex;
     gap: 15px;
     justify-content: flex-end;
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
 .btn-cancel {
     padding: 12px 25px;
-    background: #6c757d;
+    background: var(--text-light);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.3s;
+    font-weight: 600;
+    transition: var(--transition);
 }
 
 .btn-cancel:hover {
-    background: #5a6268;
+    background: #6c757d;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-submit {
     padding: 12px 25px;
-    background: #28a745;
+    background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
-    transition: background 0.3s;
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-submit:hover {
-    background: #218838;
-}
-
-/* ========================================
-   LEGEND
-   ======================================== */
-
-.legend {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-    background: rgba(255,255,255,0.9);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9em;
-}
-
-.color-box {
-    width: 22px;
-    height: 22px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-/* ========================================
-   WEEK DISPLAY & RESET BUTTON
-   ======================================== */
-
-.week-display {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #2c3e50;
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 10px;
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .reset-btn {
-    background: #e74c3c;
+    background: var(--danger-color);
     color: white;
     padding: 12px 25px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
-    transition: background 0.3s;
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 .reset-btn:hover {
-    background: #c0392b;
+    background: #d90429;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
-
+/* Responsive Design */
 @media (max-width: 768px) {
     body {
         padding: 10px;
     }
     
     header {
-        padding: 15px;
+        padding: 20px 15px;
     }
     
     header h1 {
-        font-size: 1.8em;
+        font-size: 2.2em;
     }
     
     .timetable-container {
-        padding: 15px;
+        padding: 20px 15px;
     }
     
     .timetable-grid {
-        grid-template-columns: 80px repeat(5, 1fr);
-        font-size: 0.8em;
-    }
-    
-    .slot {
-        min-height: 60px;
-        padding: 8px 5px;
+        grid-template-columns: 70px repeat(5, 1fr);
         font-size: 0.75em;
     }
     
-    .modal-content {
-        margin: 10% auto;
-        padding: 20px;
+    .slot {
+        min-height: 70px;
+        padding: 10px 5px;
+        font-size: 0.7em;
+    }
+    
+    .legend {
+        gap: 15px;
+    }
+    
+    .legend-item {
+        font-size: 0.8em;
+        padding: 6px 12px;
     }
 }
 
 @media (max-width: 480px) {
     .timetable-grid {
         grid-template-columns: 60px repeat(5, 1fr);
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .modal-content {
+        padding: 25px 20px;
+        margin: 10% auto;
     }
 }
